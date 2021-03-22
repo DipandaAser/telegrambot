@@ -74,16 +74,15 @@ func NewWebhook(h Webhook) *Webhook {
 
 	publicUrl := h.Endpoint.PublicURL
 	if strings.HasSuffix(publicUrl, "/") {
-		h.Endpoint.PublicURL = publicUrl + "bot"
+		h.Endpoint.PublicURL = publicUrl + "bot/"
 		h.noBotEndpoint = publicUrl + "nobot"
 	} else {
-		h.Endpoint.PublicURL = publicUrl + "/bot"
+		h.Endpoint.PublicURL = publicUrl + "/bot/"
 		h.noBotEndpoint = publicUrl + "/nobot"
 	}
 
 	gin.SetMode(gin.ReleaseMode)
 	h.router = gin.Default()
-	h.router.RedirectTrailingSlash = true
 
 	// we add this handler for prevent Docker build failed when the cloud provider want to check if the container is online by calling the root
 	h.router.GET("/", func(c *gin.Context) {
