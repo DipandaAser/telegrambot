@@ -82,8 +82,12 @@ func NewWebhook(h Webhook) *Webhook {
 
 	gin.SetMode(gin.ReleaseMode)
 	h.router = gin.Default()
+	h.router.GET("/", func(c *gin.Context) {
+		c.String(http.StatusOK, h.bot.Me.Username)
+	})
 	h.router.Group("/bot").Any("/*action", func(c *gin.Context) {
 		h.ServeHTTP(c.Writer, c.Request)
+		c.String(http.StatusOK, h.bot.Me.Username)
 	})
 	h.NoBotRouter = h.router.Group("/nobot")
 	return &h
