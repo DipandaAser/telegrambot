@@ -64,6 +64,7 @@ type Webhook struct {
 	bot  *Bot
 }
 
+// GetNoBotEndpoint return the base path of no bot request handlers
 func (h *Webhook) GetNoBotEndpoint() string {
 	return h.noBotEndpoint
 }
@@ -82,9 +83,14 @@ func NewWebhook(h Webhook) *Webhook {
 
 	gin.SetMode(gin.ReleaseMode)
 	h.router = gin.Default()
+	h.router.RedirectTrailingSlash = true
+
+	// we add this handler for prevent Docker build failed when the cloud provider want to check if the container is online by calling the root
 	h.router.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, h.bot.Me.Username)
 	})
+
+	// Add handler for any type of request who come trough the bot endpoint
 	h.router.Group("/bot").Any("/*action", func(c *gin.Context) {
 		h.ServeHTTP(c.Writer, c.Request)
 		c.String(http.StatusOK, h.bot.Me.Username)
