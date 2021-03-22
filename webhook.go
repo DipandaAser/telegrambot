@@ -71,12 +71,13 @@ func (h *Webhook) GetNoBotEndpoint() string {
 // NewWebhook offer the possibility to handle incoming bot webhook call an no bot request use this to create a Webhook
 func NewWebhook(h Webhook) *Webhook {
 
-	if strings.HasSuffix(h.Endpoint.PublicURL, "/") {
-		h.Endpoint.PublicURL = h.Endpoint.PublicURL + "bot"
-		h.noBotEndpoint = h.Endpoint.PublicURL + "nobot"
+	publicUrl := h.Endpoint.PublicURL
+	if strings.HasSuffix(publicUrl, "/") {
+		h.Endpoint.PublicURL = publicUrl + "bot"
+		h.noBotEndpoint = publicUrl + "nobot"
 	} else {
-		h.Endpoint.PublicURL = h.Endpoint.PublicURL + "/bot"
-		h.noBotEndpoint = h.Endpoint.PublicURL + "/nobot"
+		h.Endpoint.PublicURL = publicUrl + "/bot"
+		h.noBotEndpoint = publicUrl + "/nobot"
 	}
 
 	gin.SetMode(gin.ReleaseMode)
